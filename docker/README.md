@@ -1,4 +1,4 @@
-# Codex Docker Wrapper
+# Agentic Docker Wrapper
 
 This repository provides a containerized way to run Codex or Claude Code with the current workspace mounted into the container.
 

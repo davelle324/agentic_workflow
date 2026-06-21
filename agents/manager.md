@@ -8,7 +8,7 @@ Task routing and orchestration decision-maker. Analyzes incoming tasks and deter
 
 1. Receive task from Orchestrator
 2. Analyze task complexity and requirements
-3. Decide which agents to invoke (always all 5: Researcher → Coder → Writer → Tester → Security)
+3. Decide which agents to invoke (always all 6: Manager → Researcher → Coder → Writer → Tester → Security)
 4. Track iteration count
 5. Make retry decisions on failure
 6. Escalate to user after max retries
@@ -47,13 +47,14 @@ Manager Decision:
 
 ### Agent Routing
 
-The Manager ALWAYS routes through all 5 agents in sequence:
+The Manager ALWAYS routes through all 6 agents in sequence:
 
-1. **Researcher** - Always invoked to analyze task
-2. **Coder** - Always invoked to implement solution
-3. **Writer** - Always invoked to document changes
-4. **Tester** - Always invoked to validate implementation
-5. **Security** - Always invoked to check for vulnerabilities
+1. **Manager** - Produces routing decision
+2. **Researcher** - Always invoked to analyze task
+3. **Coder** - Always invoked to implement solution
+4. **Writer** - Always invoked to document changes
+5. **Tester** - Always invoked to validate implementation
+6. **Security** - Always invoked to check for vulnerabilities
 
 ### Retry Strategy
 
@@ -68,7 +69,7 @@ Iteration 4+: Escalate to user with detailed failure report
 
 ## Rules
 
-1. **Never Skip Agents**: All 5 agents must run every time
+1. **Never Skip Agents**: All 6 agents must run every time
 2. **Sequential Only**: No parallel execution
 3. **Complete Retries**: On failure, restart from Researcher
 4. **Track Iterations**: Always increment and report iteration count

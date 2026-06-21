@@ -98,7 +98,7 @@ Each agent has one job:
 Invoke the orchestrator with your task:
 
 ```
-Use agents/orchestrator.md to process this task: Add user authentication to the API
+Use `agents/orchestrator.md` to process this task: Add user authentication to the API
 ```
 
 ### Trace Output
@@ -180,7 +180,7 @@ Task completed successfully after 2 iterations
 ## Agent Details
 
 ### Manager (`agents/manager.md`)
-Routes tasks and manages retry logic. Always routes through all 5 execution agents in sequence.
+Routes tasks and manages retry logic. Always routes through all 6 agents in sequence.
 
 ### Researcher (`agents/researcher.md`)
 Investigates the codebase and task requirements. Outputs research findings and recommended approaches only—no code.
@@ -238,7 +238,8 @@ If ANY agent fails, the entire pipeline retries.
 
 ```
 .
-├── CLAUDE.md                    # Project configuration and rules
+├── AGENTS.md                    # Project configuration and rules for Codex
+├── CLAUDE.md                    # Project configuration and rules for Claude Code
 ├── README.md                    # This file
 ├── agents/
 │   ├── orchestrator.md          # Main orchestration logic
@@ -248,13 +249,11 @@ If ANY agent fails, the entire pipeline retries.
 │   ├── writer.md                # Documentation
 │   ├── tester.md                # Testing and validation
 │   └── security.md              # Security scanning
-└── examples/
-    └── usage_example.md         # Example tasks and outputs
 ```
 
 ## Configuration
 
-The system behavior is defined in `CLAUDE.md`. Key configuration:
+The system behavior is defined in `CLAUDE.md` and `AGENTS.md`. Key configuration:
 
 - **Trace Mode**: Mandatory structured output
 - **Agent Sequence**: Fixed order (cannot be changed)
@@ -306,17 +305,20 @@ The system behavior is defined in `CLAUDE.md`. Key configuration:
 
 ### No trace output
 - Verify task went through `agents/orchestrator.md`
-- Check CLAUDE.md is loaded
+- Check CLAUDE.md/AGENTS.md is loaded
 - Ensure orchestrator is enforcing trace format
 
-## Examples
+## Docker Wrapper
 
-See `examples/usage_example.md` for detailed examples of:
-- Simple feature implementation
-- Bug fix with retry
-- Security vulnerability resolution
-- Documentation generation
+The repository also includes a Docker wrapper for running the Codex or Claude Code CLIs in the current workspace.
 
-## License
+- `docker/run.sh` builds and runs the appropriate image.
+- `docker/Dockerfile.codex` installs `@openai/codex`.
+- `docker/Dockerfile.claude` installs `@anthropic-ai/claude-code`.
 
-MIT
+Examples:
+
+```bash
+AGENT=codex ./docker/run.sh
+AGENT=claude ./docker/run.sh
+```

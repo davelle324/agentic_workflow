@@ -81,7 +81,7 @@ Iteration: <current iteration number>
 
 1. **Mandatory Trace Output**: Every invocation must produce complete trace
 2. **Sequential Execution**: Agents run one at a time, in order
-3. **No Stage Skipping**: All 5 agents must run even if earlier stages suggest they're unnecessary
+3. **No Stage Skipping**: All 6 agents must run even if earlier stages suggest they're unnecessary
 4. **Clean Separation**: Each stage's output is isolated in its own block
 5. **Retry on Any Failure**: If any agent reports failure, restart from Manager
 6. **Iteration Limit**: Max 3 complete iterations before escalating to user
@@ -107,7 +107,7 @@ Pipeline succeeds only when ALL of the following are true:
 
 ## Usage
 
-Invoke this orchestrator for any task by using the Agent tool with a prompt like:
+Invoke this orchestrator for any task by using a prompt like:
 
 ```
 Use agents/orchestrator.md to process this task: <task description>

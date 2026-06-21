@@ -1,0 +1,18 @@
+FROM node:20-bullseye-slim
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends \
+    ca-certificates \
+    git \
+    openssh-client \
+    bash \
+  && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /workspace
+
+# Install Claude Code
+RUN npm install -g @anthropic-ai/claude-code
+
+ENTRYPOINT ["claude"]

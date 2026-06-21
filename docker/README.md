@@ -1,26 +1,32 @@
 # Codex Docker Wrapper
 
-This repository now provides a containerized way to run `codex` with the current workspace mounted into the container.
+This repository provides a containerized way to run Codex or Claude Code with the current workspace mounted into the container.
 
 ## What it does
 
-- Builds a Docker image that includes the Codex CLI.
+- Builds a Docker image for the selected agent.
 - Mounts your project at `/workspace`.
-- Mounts `~/.codex` so Codex keeps its config and auth state.
+- Mounts `~/.codex` or `~/.claude` so the CLI keeps its config and auth state.
 - Mounts `~/.gitconfig` read-only so git identity matches your host setup.
 
 ## Usage
 
-Run Codex through the wrapper script:
+Run the wrapper script from the repository root:
 
 ```bash
-./docker/run.sh
+./run.sh
 ```
 
-Pass any Codex arguments after the script name:
+Pass any arguments after the script name:
 
 ```bash
-AGENT=codex ./docker/run.sh chat
+AGENT=codex ./run.sh
+```
+
+To use Claude Code instead:
+
+```bash
+AGENT=claude ./run.sh
 ```
 
 ## Configuration
@@ -32,5 +38,5 @@ AGENT=codex ./docker/run.sh chat
 
 ## Notes
 
-- The container uses `--network=host` so Codex can reach external services without extra proxy setup.
-- If your environment needs a different network mode, edit `docker/run.sh`.
+- The container uses `--network=host` so Codex and Claude can reach external services without extra proxy setup.
+- If your environment needs a different network mode, edit `run.sh`.

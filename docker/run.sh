@@ -19,10 +19,11 @@ if ! command -v docker >/dev/null 2>&1; then
   exit 1
 fi
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 if [ "$AGENT" == "CODEX" ]; then
   # Build image if doesn't exist
   if ! docker image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
-    docker build -t "$IMAGE_NAME" -f Dockerfile.codex .
+    docker build -t "$IMAGE_NAME" -f  $SCRIPT_DIR/Dockerfile.codex $SCRIPT_DIR
   fi
   exec docker run --rm -it \
     --network=host \
@@ -36,7 +37,7 @@ if [ "$AGENT" == "CODEX" ]; then
 elif [ "$AGENT" == "CLAUDE" ]; then
   # Build image if doesn't exist
   if ! docker image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
-    docker build -t "$IMAGE_NAME" -f Dockerfile.claude .
+    docker build -t "$IMAGE_NAME" -f $SCRIPT_DIR/Dockerfile.claude $SCRIPT_DIR
   fi
   exec docker run --rm -it \
     --network=host \

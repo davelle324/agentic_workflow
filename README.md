@@ -243,6 +243,7 @@ Skills are reusable Claude Code capabilities invoked with `/skill-name`. They li
 | Skill | File | Description |
 |-------|------|-------------|
 | `handoff` | `skills/handoff/SKILL.md` | Create or update `handoff.md` with current session context for continuity between sessions |
+| `test` | `skills/test/SKILL.md` | Run all pytest tests, enforce 100% pylint compliance (10.0/10.0), and achieve 100% code coverage |
 
 ### Using Skills
 
@@ -286,8 +287,10 @@ skills/
 │   ├── tester.md                # Testing and validation
 │   └── security.md              # Security scanning
 └── skills/
-    └── handoff/
-        └── SKILL.md             # Handoff document skill
+    ├── handoff/
+    │   └── SKILL.md             # Handoff document skill
+    └── test/
+        └── SKILL.md             # Test, pylint, and coverage skill
 ```
 
 ## Configuration

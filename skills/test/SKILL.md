@@ -34,22 +34,78 @@ If no test files are found, report this to the user and skip pytest execution.
 
 ### Step 2: Ensure Testing Dependencies and Configuration
 
-Check if `pyproject.toml` exists and add testing dependencies and configuration if needed:
+Create or update `pyproject.toml` with testing dependencies and configuration:
 
 ```bash
-# Check for pyproject.toml
-if [ -f "pyproject.toml" ]; then
-    echo "Found pyproject.toml, checking for test dependencies..."
-    
-    # Detect the main source directory (common patterns: app, src, or project name)
-    SOURCE_DIR=$(find . -maxdepth 1 -type d -name "app" -o -name "src" | head -1 | sed 's|^\./||')
+# Detect the main source directory (common patterns: app, src, or project name)
+SOURCE_DIR=$(find . -maxdepth 1 -type d -name "app" -o -name "src" | head -1 | sed 's|^\./||')
+if [ -z "$SOURCE_DIR" ]; then
+    # Fallback: find first Python package directory
+    SOURCE_DIR=$(find . -maxdepth 1 -type f -name "*.py" -exec dirname {} \; | grep -v test | head -1 | sed 's|^\./||')
     if [ -z "$SOURCE_DIR" ]; then
-        # Fallback: find first Python package directory
-        SOURCE_DIR=$(find . -maxdepth 1 -type f -name "*.py" -exec dirname {} \; | grep -v test | head -1 | sed 's|^\./||')
-        if [ -z "$SOURCE_DIR" ]; then
-            SOURCE_DIR="."
-        fi
+        SOURCE_DIR="."
     fi
+fi
+
+# Create pyproject.toml if it doesn't exist
+if [ ! -f "pyproject.toml" ]; then
+    echo "Creating pyproject.toml with test configuration..."
+    
+    # Get project name from directory or use default
+    PROJECT_NAME=$(basename "$PWD" | tr '[:upper:]' '[:lower:]' | tr ' ' '-')
+    
+    cat > pyproject.toml << EOF
+[project]
+name = "${PROJECT_NAME}"
+version = "0.1.0"
+description = "Add description here"
+requires-python = ">=3.8"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-cov>=7.1.0",
+    "pylint>=4.0.6",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=${SOURCE_DIR} --cov-branch --cov-report=term-missing --cov-fail-under=100"
+
+[tool.coverage.run]
+branch = true
+source = ["${SOURCE_DIR}"]
+
+[tool.coverage.report]
+fail_under = 100
+show_missing = true
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+]
+
+[tool.pylint.main]
+source-roots = ["."]
+jobs = 1
+recursive = true
+
+[tool.pylint.format]
+max-line-length = 100
+
+[tool.pylint.basic]
+good-names = "i,j,k,ex,Run,_,e,id,app,templates"
+
+[tool.pylint.design]
+max-args = 6
+max-positional-arguments = 6
+max-attributes = 12
+
+[tool.pylint.similarities]
+min-similarity-lines = 6
+EOF
+    echo "Created pyproject.toml"
+else
+    echo "Found pyproject.toml, checking for test dependencies..."
     
     # Add dev dependencies if not present
     if ! grep -q "pytest" pyproject.toml; then
@@ -103,13 +159,10 @@ EOF
     else
         echo "Test dependencies already present in pyproject.toml"
     fi
-    
-    # Install with dev extras
-    pip install -e ".[dev]" 2>/dev/null || pip install pytest pytest-cov pylint coverage
-else
-    echo "No pyproject.toml found, installing dependencies directly..."
-    pip install pytest pytest-cov pylint coverage 2>/dev/null
 fi
+
+# Install with dev extras
+pip install -e ".[dev]" 2>/dev/null || pip install pytest pytest-cov pylint coverage
 ```
 
 ### Step 3: Run Pytest with Coverage
